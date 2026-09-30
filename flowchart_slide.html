@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueTrack v2 - Slide 3: Technical Approach Pipeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #06080d;
+      color: #f8fafc;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .slide-container {
+      width: 100%;
+      max-width: 1400px;
+      background: #0d121c;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 32px 40px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.75);
+      position: relative;
+    }
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 18px;
+      margin-bottom: 28px;
+    }
+    .title-group h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .subtitle {
+      font-size: 13.5px;
+      color: #94a3b8;
+      margin-top: 5px;
+    }
+    /* 5-Block Horizontal Pipeline */
+    .pipeline-wrapper {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+      position: relative;
+      z-index: 2;
+    }
+    .block-card {
+      background: #111827;
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 270px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .block-card:hover {
+      transform: translateY(-2px);
+    }
+    /* Distinct Header Badges for Each Block */
+    .block-step {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .block-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .block-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+    }
+    .block-items li {
+      font-size: 14px; /* Minimum 14pt requirement */
+      line-height: 1.35;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .block-items li strong {
+      color: #ffffff;
+    }
+
+    /* Block Accent Theming */
+    .b1 { border-top: 4px solid #38bdf8; }
+    .b1 .block-step { color: #38bdf8; }
+    .b1 .bullet { background: #38bdf8; }
+
+    .b2 { border-top: 4px solid #a855f7; }
+    .b2 .block-step { color: #c084fc; }
+    .b2 .bullet { background: #a855f7; }
+
+    .b3 { border-top: 4px solid #06b6d4; background: #0c1c2e; border-color: rgba(6, 182, 212, 0.4); }
+    .b3 .block-step { color: #22d3ee; }
+    .b3 .bullet { background: #06b6d4; }
+
+    .b4 { border-top: 4px solid #f59e0b; }
+    .b4 .block-step { color: #fbbf24; }
+    .b4 .bullet { background: #f59e0b; }
+
+    .b5 { border-top: 4px solid #10b981; }
+    .b5 .block-step { color: #34d399; }
+    .b5 .bullet { background: #10b981; }
+
+    /* Flow Arrows Between Blocks */
+    .flow-connectors {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      right: 10%;
+      transform: translateY(-50%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .arrow-indicator {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+    .arrow-icon {
+      color: #475569;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    /* Single Clean Feedback Arrow: Map Constraint -> Fusion */
+    .feedback-banner {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px dashed rgba(245, 158, 11, 0.5);
+      border-radius: 10px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      font-size: 13.5px;
+      color: #e2e8f0;
+    }
+    .feedback-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+    .feedback-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    /* Legend Box for N1 / N2 / N3 */
+    .legend-box {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .legend-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .legend-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag-n1 { color: #38bdf8; }
+    .tag-n2 { color: #fbbf24; }
+    .tag-n3 { color: #f43f5e; }
+    .exp-pill {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(244, 63, 94, 0.2);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+    .legend-desc {
+      font-size: 12.5px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* Print / Export button */
+    .btn-export {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-export:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="title-group">
+        <h1>
+          TECHNICAL APPROACH &amp; ARCHITECTURE
+          <span class="badge">SLIDE 3</span>
+        </h1>
+        <p class="subtitle">5-Stage Continuous Sensor Fusion Pipeline with Calibrated Edge AI &amp; Map Regularization</p>
+      </div>
+      <div>
+        <button class="btn-export" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+    </div>
+
+    <!-- 5 Big Blocks in a Row -->
+    <div class="pipeline-wrapper">
+      <div class="pipeline-grid">
+        
+        <!-- Block 1 -->
+        <div class="block-card b1">
+          <div class="block-step">STAGE 1</div>
+          <div class="block-title">Multi-Rate Inputs</div>
+          <ul class="block-items">
+            <li><span class="bullet"></span><div><strong>Phone MEMS IMU</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Acc + Gyro @ 50–60 Hz</span></div></li>
+            <li><span class="bullet"></span><div><strong>Raw GNSS Fixes</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Doppler &amp; C/N₀ @ 1–10 Hz</span></div></li>
+            <li><span class="bullet"></span><div><strong>Offline OSM Graph</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Vector road manifold</span></div></li>
+          </ul>
+        </div>
+
+        <!-- Block 2 -->
+        <div class="block-card b2">
+          <div class="block-step">STAGE 2</div>
+          <div class="block-title">AI Motion Estimation</div>
+          <ul class="block-items">
+            <li><span class="bullet"></span><div><strong>Continuous Alignment</strong><br/><span style="color:#94a3b8; font-size:12.5px;">CUSUM detects mount slip in 120 ms</span></div></li>
+            <li><span class="bullet"></span><div><strong>1D-TCN Speed Network</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Learns forward speed v̂ from IMU</span></div></li>
+            <li><span class="bullet"></span><div><strong>Heteroscedastic Var (σ²)</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Downweights pothole shocks</span></div></li>
+          </ul>
+        </div>
+
+        <!-- Block 3 -->
+        <div class="block-card b3">
+          <div class="block-step">STAGE 3 (CORE)</div>
+          <div class="block-title">Always-On Fusion</div>
+          <ul class="block-items">
+            <li><span class="bullet"></span><div><strong>16-State Error-State EKF</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Continuous strapdown propagation</span></div></li>
+            <li><span class="bullet"></span><div><strong>Kinematic NHC + ZUPT</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Constrains sideslip to zero</span></div></li>
+            <li><span class="bullet"></span><div><strong>NIS χ² &amp; CUSUM Gating</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Isolates spoofed/jammed GPS</span></div></li>
+          </ul>
+        </div>
+
+        <!-- Block 4 -->
+        <div class="block-card b4">
+          <div class="block-step">STAGE 4</div>
+          <div class="block-title">Map Constraints</div>
+          <ul class="block-items">
+            <li><span class="bullet"></span><div><strong>HMM Road Snapping</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Viterbi matches road centerline</span></div></li>
+            <li><span class="bullet"></span><div><strong>Curvature Reset (N2)</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Bends snap along-track drift</span></div></li>
+            <li><span class="bullet"></span><div><strong>Tunnel Drift Budget</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Precomputes uncertainty bounds</span></div></li>
+          </ul>
+        </div>
+
+        <!-- Block 5 -->
+        <div class="block-card b5">
+          <div class="block-step">STAGE 5</div>
+          <div class="block-title">Navigation Output</div>
+          <ul class="block-items">
+            <li><span class="bullet"></span><div><strong>&lt; 20 ms Latency</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Seamless tunnel entry handover</span></div></li>
+            <li><span class="bullet"></span><div><strong>10–50 Hz Mobile Telemetry</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Smooth turn-by-turn HUD</span></div></li>
+            <li><span class="bullet"></span><div><strong>1.84% Verified Drift</strong><br/><span style="color:#94a3b8; font-size:12.5px;">Passes &lt;10% SIH gate by 5.4x</span></div></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Feedback Arrow: Stage 4 -> Stage 3 -->
+    <div class="feedback-banner">
+      <div class="feedback-label">
+        <span style="font-size: 16px;">🔄</span>
+        <span><strong>Closed-Loop Map Constraint:</strong> Stage 4 HMM road heading feeds directly back into Stage 3 ES-EKF measurement update</span>
+      </div>
+      <span class="feedback-pill">ONE-WAY FEEDBACK LOOP</span>
+    </div>
+
+    <!-- Legend Explaining N1, N2, N3 -->
+    <div class="legend-box">
+      <div class="legend-col">
+        <div class="legend-tag tag-n1">
+          <span>● N1: On-Device RLS Adaptation</span>
+        </div>
+        <div class="legend-desc">
+          Uses healthy pre-tunnel GNSS Doppler to adapt neural velocity scale &amp; bias online; freezes instantly at tunnel blackout.
+        </div>
+      </div>
+
+      <div class="legend-col">
+        <div class="legend-tag tag-n2">
+          <span>● N2: Observability Drift Budget</span>
+        </div>
+        <div class="legend-desc">
+          Precomputes road curvature Fisher Information; highway bends break along-track unobservability and snap accumulated drift.
+        </div>
+      </div>
+
+      <div class="legend-col">
+        <div class="legend-tag tag-n3">
+          <span>● N3: Vibration Odometry</span>
+          <span class="exp-pill">EXPERIMENTAL / RESEARCH</span>
+        </div>
+        <div class="legend-desc">
+          Evaluated engine RPM acoustic harmonics. Filtered out via day-one kill criterion (R &lt; 0.90 on phone MEMS) to maintain honesty.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

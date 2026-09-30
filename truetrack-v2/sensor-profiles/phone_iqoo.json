@@ -1,0 +1,18 @@
+{
+  "profile_name": "phone_iqoo",
+  "device_category": "smartphone_mems",
+  "hardware_target": "Snapdragon Hexagon NPU / Android 14",
+  "vehicle_class": "two_wheeler",
+  "nominal_imu_rate_hz": 60.8,
+  "nominal_gnss_rate_hz": 1.0,
+  "accel_noise_density_mps2_rt_hz": 0.0028,
+  "accel_random_walk_mps2": 0.05,
+  "gyro_noise_density_rads_rt_hz": 0.00035,
+  "gyro_bias_instability_rads": 0.002,
+  "gravity_magnitude_mps2": 9.80665,
+  "zupt_threshold_accel_mps2": 0.35,
+  "zupt_threshold_gyro_rads": 0.04,
+  "nhc_lateral_variance_mps2": 0.5,
+  "nhc_vertical_variance_mps2": 1.0,
+  "simulated": false
+}

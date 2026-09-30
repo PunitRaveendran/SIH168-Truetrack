@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueTrack v2: Intelligent Dead Reckoning & GNSS Fusion Cockpit</title>
+  <link rel="stylesheet" href="lib/maplibre-gl.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="lib/maplibre-gl.js"></script>
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation & System Status Header -->
+  <header class="cockpit-header">
+    <div class="brand">
+      <div class="logo-mark">TT-v2</div>
+      <div class="brand-text">
+        <h1>TrueTrack v2</h1>
+        <span class="subtitle">AI/ML Intelligent Dead Reckoning &bull; 100% On-Device Sensor Intelligence</span>
+      </div>
+    </div>
+
+    <!-- 5-Stage Estimator Pipeline Lightbar -->
+    <div class="pipeline-lightbar">
+      <div class="pipe-node active" id="pipe-imu">
+        <span class="dot"></span>
+        <span class="label">IMU 60Hz</span>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-node active" id="pipe-align">
+        <span class="dot"></span>
+        <span class="label">Dynamic Align</span>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-node active" id="pipe-tcn">
+        <span class="dot"></span>
+        <span class="label">TCN Speed</span>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-node active" id="pipe-ekf">
+        <span class="dot"></span>
+        <span class="label">16-State ES-EKF</span>
+      </div>
+      <div class="pipe-arrow">&rarr;</div>
+      <div class="pipe-node active" id="pipe-integrity">
+        <span class="dot"></span>
+        <span class="label">NIS Integrity</span>
+      </div>
+    </div>
+
+    <!-- Mode Badge -->
+    <div class="header-badges">
+      <div class="badge badge-backend fallback" id="backend-status-badge">
+        <span class="pulse-dot"></span>
+        <span id="backend-status-text">WS: CONNECTING...</span>
+      </div>
+      <div class="badge badge-gnss" id="gnss-status-badge">GNSS: HEALTHY LOCK</div>
+      <div class="badge badge-sim" id="sim-badge" style="display: none;">SIMULATED DATA</div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="main-cockpit">
+    <!-- Left Tactical Telemetry HUD -->
+    <aside class="sidebar-hud">
+      <div class="hud-card">
+        <h3>Primary Flight Telemetry</h3>
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <span class="metric-label">FORWARD SPEED</span>
+            <div class="metric-val" id="val-speed">0.0 <span class="unit">km/h</span></div>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">HEADING (COG)</span>
+            <div class="metric-val" id="val-heading">000.0<span class="unit">&deg;</span></div>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">ALONG-TRACK DRIFT</span>
+            <div class="metric-val val-good" id="val-along-track">0.0 <span class="unit">m</span></div>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">CROSS-TRACK DRIFT</span>
+            <div class="metric-val val-good" id="val-cross-track">0.0 <span class="unit">m</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Card: TrueTrack v2 vs Baseline B0 -->
+      <div class="hud-card card-comparison">
+        <h3>Side-by-Side Blackout Divergence</h3>
+        <div class="compare-row">
+          <div class="compare-col col-tt">
+            <div class="col-title"><span class="puck-icon puck-tt"></span> TrueTrack v2</div>
+            <div class="big-metric" id="tt-drift-m">0.0 m</div>
+            <span class="sub-metric" id="tt-drift-pct">(0.0% dist)</span>
+          </div>
+          <div class="compare-divider">vs</div>
+          <div class="compare-col col-b0">
+            <div class="col-title"><span class="puck-icon puck-b0"></span> Baseline B0 (Hold)</div>
+            <div class="big-metric" id="b0-drift-m">0.0 m</div>
+            <span class="sub-metric" id="b0-drift-pct">(0.0% dist)</span>
+          </div>
+        </div>
+        <div class="divergence-ratio-banner" id="div-banner">
+          DIVERGENCE REDUCTION: <span id="div-ratio">1.0x</span>
+        </div>
+      </div>
+
+      <!-- N2 Curvature Observability & Pre-Tunnel Drift Budget -->
+      <div class="hud-card">
+        <h3>N2: Along-Track Observability & Drift Budget</h3>
+        <div class="budget-row">
+          <div class="budget-item">
+            <span class="b-label">OBSERVABILITY GRADE</span>
+            <span class="b-val" id="val-obs-grade">HIGH (Bends Available)</span>
+          </div>
+          <div class="budget-item">
+            <span class="b-label">PREDICTED DRIFT BUDGET</span>
+            <span class="b-val val-highlight" id="val-drift-budget">&plusmn; 6.4 m</span>
+          </div>
+        </div>
+        <div class="budget-progress-bar">
+          <div class="budget-fill" id="budget-fill" style="width: 15%;"></div>
+        </div>
+        <div class="budget-subtext">Precomputed from road geometry Fisher Information content I(e)</div>
+      </div>
+
+      <!-- Scenario Injection & Route Selection -->
+      <div class="hud-card">
+        <h3>Interactive Pitch Demonstration Scenarios</h3>
+        <div class="control-group">
+          <label>Select Route / Dataset:</label>
+          <select id="route-select" class="hud-select">
+            <option value="chennai_varada">Chennai Varadarajapuram (Real Two-Wheeler)</option>
+            <option value="chennai_highway">Chennai 45/46 Express Highway (Real Two-Wheeler)</option>
+            <option value="iovnbd_car">IO-VNBD Passenger Car (Coventry - SIMULATED)</option>
+            <option value="fog_200hz">200 Hz Tactical FOG IMU (SIMULATED)</option>
+          </select>
+        </div>
+
+        <div class="scenario-buttons">
+          <button class="btn btn-scenario" id="btn-toggle-blackout">Trigger GNSS Blackout</button>
+          <button class="btn btn-scenario" id="btn-rotate-mount">Rotate Phone (30&deg; Tilt)</button>
+          <button class="btn btn-scenario" id="btn-inject-jamming">Inject Jamming Burst</button>
+          <button class="btn btn-scenario" id="btn-inject-spoof">Inject CUSUM Spoofing</button>
+        </div>
+
+        <div class="playback-controls">
+          <button class="btn btn-primary" id="btn-play">Pause</button>
+          <button class="btn btn-secondary" id="btn-speed">1x Speed</button>
+          <button class="btn btn-secondary" id="btn-reset">Reset</button>
+          <span class="playback-time" id="playback-time">00:00 [Frame 0]</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Map Visualization Container -->
+    <main class="map-view-container">
+      <div id="map" class="maplibre-map"></div>
+      
+      <!-- Live Map Overlay Legend -->
+      <div class="map-legend">
+        <div class="legend-item"><span class="legend-dot dot-gt"></span> Ground Truth Trajectory</div>
+        <div class="legend-item"><span class="legend-dot dot-tt"></span> TrueTrack v2 (ES-EKF + TCN)</div>
+        <div class="legend-item"><span class="legend-dot dot-b0"></span> Baseline B0 (Hold Speed)</div>
+        <div class="legend-item"><span class="legend-ellipse"></span> EKF Covariance Ellipse (3&sigma;)</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/cockpit_app.js?v=2.6"></script>
+</body>
+</html>

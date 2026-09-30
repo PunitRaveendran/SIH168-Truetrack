@@ -1,0 +1,18 @@
+{
+  "profile_name": "vehicle_iovnbd",
+  "device_category": "automotive_can_and_phone",
+  "hardware_target": "Ford Fiesta CAN / VBOX Video HD2 / Android Phone",
+  "vehicle_class": "passenger_car",
+  "nominal_imu_rate_hz": 10.0,
+  "nominal_gnss_rate_hz": 10.0,
+  "accel_noise_density_mps2_rt_hz": 0.0015,
+  "accel_random_walk_mps2": 0.02,
+  "gyro_noise_density_rads_rt_hz": 0.0002,
+  "gyro_bias_instability_rads": 0.001,
+  "gravity_magnitude_mps2": 9.80665,
+  "zupt_threshold_accel_mps2": 0.25,
+  "zupt_threshold_gyro_rads": 0.03,
+  "nhc_lateral_variance_mps2": 0.05,
+  "nhc_vertical_variance_mps2": 0.1,
+  "simulated": false
+}

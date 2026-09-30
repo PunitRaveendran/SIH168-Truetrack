@@ -1,0 +1,40 @@
+# Android & Gradle
+.gradle/
+build/
+*/build/
+*/*/build/
+*.apk
+*.aab
+local.properties
+.cxx/
+Captures/
+
+# Node & Web
+node_modules/
+*/node_modules/
+*/*/node_modules/
+dist/
+*/dist/
+.vite/
+*.tsbuildinfo
+
+# Python & Virtual Environments
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+venv/
+.venv/
+env/
+
+# IDE & OS Artifacts
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+*.log

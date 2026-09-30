@@ -1,0 +1,19 @@
+{
+  "profile_name": "fog_simulated",
+  "device_category": "tactical_grade_fog",
+  "hardware_target": "Fiber Optic Gyroscope Tactical INS (SIMULATED)",
+  "vehicle_class": "generic_ground_vehicle",
+  "nominal_imu_rate_hz": 200.0,
+  "nominal_gnss_rate_hz": 10.0,
+  "accel_noise_density_mps2_rt_hz": 0.0003,
+  "accel_random_walk_mps2": 0.001,
+  "gyro_noise_density_rads_rt_hz": 0.00001,
+  "gyro_bias_instability_rads": 0.000005,
+  "gravity_magnitude_mps2": 9.80665,
+  "zupt_threshold_accel_mps2": 0.05,
+  "zupt_threshold_gyro_rads": 0.005,
+  "nhc_lateral_variance_mps2": 0.01,
+  "nhc_vertical_variance_mps2": 0.02,
+  "simulated": true,
+  "simulation_label": "SIMULATED FOG-GRADE IMU (200 Hz)"
+}
